@@ -18,32 +18,106 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define STRMAXSIZE 1000
 
 struct Bor 
 {
-  char boraszat[1000];
+  char boraszat[STRMAXSIZE];
   int terulet;
-  char tipus[1000];
+  char tipus[STRMAXSIZE];
   int liter;
   int cukorfok;
 };
 
 
-void read(struct Bor*);
-void list(struct Bor*);
+void readStruct(struct Bor*);
+void listStruct(struct Bor*);
+void printToFile(char*, struct Bor);
 
 
 int main(void)
 {
+/*
+  // menu
+  char choice;
+  while(choice != 'x')
+  {
+  printf("\
+      \n  Mit szeretnel?\n\
+      (l) lista keszitese\n\
+      (f) adatok felvetele\n\
+      (m) adatok modositasa\n\
+      (t) adatok torlese\n\
+      (x) kilepes\n\
+      l/f/m/t/x: "); scanf("%c", &choice);
   
+    switch (choice)
+    {
+    case 'l': 
+      break;
+      
+    case 'f':
+      break;
+    
+    case 'm':
+      break;
+    
+    case 't':
+      break;
+    }
+  }
+*/
+
   struct Bor myBor;
-  read(&myBor);
-  list(&myBor);
+  char file[100] = "log.txt";
+  
+  readStruct(&myBor);
+  printToFile(file, myBor);
+  listStruct(&myBor);
 
   return 0;
 }
 
-void read(struct Bor* bor)
+
+
+//////////////////////////////////////////// FUNCTIONS ///////////////////////////////////////////
+
+
+void printToFile(char filename[100], struct Bor bor)
+{
+  FILE *outfile;
+
+  outfile = fopen(filename, "w");
+
+  if (outfile == NULL)
+  {
+    fprintf(stderr, "\nFile cannot be opened\n");
+    exit (1);
+  }
+
+  fprintf(outfile, "%s ", bor.boraszat);
+  fprintf(outfile, "%i ", bor.terulet);
+  fprintf(outfile, "%s ", bor.tipus);
+  fprintf(outfile, "%i ", bor.liter);
+  fprintf(outfile, "%i ", bor.cukorfok);
+  fprintf(outfile, "\n");
+  if (fwrite != 0)
+  {
+    printf ("Succcess!\n");
+  }
+  else
+  {
+    printf("Error.\n");
+  }
+
+  fclose(outfile);
+}
+
+
+void readStruct(struct Bor* bor)
 {
   printf("Boraszat: "); scanf("%s", bor->boraszat);
   printf("Terulet: "); scanf("%i", &bor->terulet);
@@ -52,7 +126,7 @@ void read(struct Bor* bor)
   printf("Cukorfok: "); scanf("%i", &bor->cukorfok);
 }
 
-void list(struct Bor* bor)
+void listStruct(struct Bor* bor)
 {
   printf("%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, bor->liter, bor->cukorfok);
 }
