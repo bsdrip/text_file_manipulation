@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #define STRMAXSIZE 1000
+#define FILEMAXSIZE 12
 
 struct Bor 
 {
@@ -43,13 +44,13 @@ int main(void)
 {
 
   struct Bor temp;
-  char file[12] = "log/log.txt";
+  char file[FILEMAXSIZE] = "log/log.txt";
   
   // menu
   char choice[STRMAXSIZE];
   do 
   {
-  printf("\
+  printf("\n################################################\
       \n  Mit szeretnel?\n\
       (l) lista keszitese\n\
       (f) adatok felvetele\n\
@@ -64,10 +65,11 @@ int main(void)
     case 'l':
       if (access(file, F_OK))
       {
-        printf("Log file is empty.\n");
+        printf("\n  Log fajl ures.\n");
       }
       else 
       {
+        printf("\n  Log fajl tartalma:\n");
         listFile(file);
       }
       break;
@@ -75,11 +77,13 @@ int main(void)
     case 'f':
       readStruct(&temp);
       printToFile(file, temp);
-      listFile(file);
+      listStruct(&temp);
       break;
 
     case 'e':
+      printf("\n  Log fajl torolve.\n");
       remove(file);
+      break;
     
 //    case 'm':
 //      break;
@@ -97,7 +101,7 @@ int main(void)
 
 //////////////////////////////////////////// FUNCTIONS ///////////////////////////////////////////
 
-void listFile(char filename[100])
+void listFile(char filename[FILEMAXSIZE])
 {
   FILE *file;
 
@@ -107,10 +111,11 @@ void listFile(char filename[100])
 
   if (file == NULL)
   {
-    printf("Cannot open file.\n");
+    printf("\nCannot open file.\n");
     exit (0);
   }
 
+  printf("\n");
   c = fgetc(file);
   while (c != EOF)
   {
@@ -121,7 +126,7 @@ void listFile(char filename[100])
   fclose(file);
 }
 
-void printToFile(char filename[100], struct Bor bor)
+void printToFile(char filename[FILEMAXSIZE], struct Bor bor)
 {
   FILE *outfile;
 
@@ -133,14 +138,13 @@ void printToFile(char filename[100], struct Bor bor)
     exit (1);
   }
 
-  //fprintf(outfile, "%u ", SERIAL);
   fprintf(outfile, "%s ", bor.boraszat);
   fprintf(outfile, "%i ", bor.terulet);
   fprintf(outfile, "%s ", bor.tipus);
   fprintf(outfile, "%i ", bor.liter);
   fprintf(outfile, "%i ", bor.cukorfok);
   fprintf(outfile, "\n");
-
+/*
   if (fwrite != 0)
   {
     printf ("Succcess!\n");
@@ -149,21 +153,21 @@ void printToFile(char filename[100], struct Bor bor)
   {
     printf("Error.\n");
   }
-
+*/
   fclose(outfile);
 }
 
 
 void readStruct(struct Bor* bor)
 {
-  printf("Boraszat: "); scanf("%s", bor->boraszat);
-  printf("Terulet: "); scanf("%i", &bor->terulet);
-  printf("Tipus: "); scanf("%s", bor->tipus);
-  printf("Liter: "); scanf("%i", &bor->liter);
-  printf("Cukorfok: "); scanf("%i", &bor->cukorfok);
+  printf("  Boraszat: "); scanf("%s", bor->boraszat);
+  printf("  Terulet: "); scanf("%i", &bor->terulet);
+  printf("  Tipus: "); scanf("%s", bor->tipus);
+  printf("  Liter: "); scanf("%i", &bor->liter);
+  printf("  Cukorfok: "); scanf("%i", &bor->cukorfok);
 }
 
 void listStruct(struct Bor* bor)
 {
-  printf("%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, bor->liter, bor->cukorfok);
+  printf("\n%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, bor->liter, bor->cukorfok);
 }
