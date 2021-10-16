@@ -36,14 +36,17 @@ struct Bor
 void readStruct(struct Bor*);
 void listStruct(struct Bor*);
 void printToFile(char*, struct Bor);
-
+void listFile(char*);
 
 int main(void)
 {
-/*
+
+  struct Bor temp;
+  char file[8] = "log.txt";
+  
   // menu
-  char choice;
-  while(choice != 'x')
+  char choice[STRMAXSIZE];
+  do 
   {
   printf("\
       \n  Mit szeretnel?\n\
@@ -52,31 +55,28 @@ int main(void)
       (m) adatok modositasa\n\
       (t) adatok torlese\n\
       (x) kilepes\n\
-      l/f/m/t/x: "); scanf("%c", &choice);
+      l/f/m/t/x: "); scanf("%s", &choice);
   
-    switch (choice)
+    switch (choice[0])
     {
-    case 'l': 
+    case 'l':
+      listFile(file);
       break;
       
     case 'f':
+      readStruct(&temp);
+      printToFile(file, temp);
+      listFile(file);
       break;
     
-    case 'm':
-      break;
-    
-    case 't':
-      break;
+//    case 'm':
+//      break;
+//    
+//    case 't':
+//      break;
     }
-  }
-*/
+  } while (choice[0] != 'x');
 
-  struct Bor myBor;
-  char file[100] = "log.txt";
-  
-  readStruct(&myBor);
-  printToFile(file, myBor);
-  listStruct(&myBor);
 
   return 0;
 }
@@ -85,12 +85,35 @@ int main(void)
 
 //////////////////////////////////////////// FUNCTIONS ///////////////////////////////////////////
 
+void listFile(char filename[100])
+{
+  FILE *file;
+
+  char c;
+
+  file = fopen(filename, "r");
+
+  if (file == NULL)
+  {
+    printf("Cannot open file.\n");
+    exit (0);
+  }
+
+  c = fgetc(file);
+  while (c != EOF)
+  {
+    printf("%c", c);
+    c = fgetc(file);
+  }
+
+  fclose(file);
+}
 
 void printToFile(char filename[100], struct Bor bor)
 {
   FILE *outfile;
 
-  outfile = fopen(filename, "w");
+  outfile = fopen(filename, "a");
 
   if (outfile == NULL)
   {
@@ -98,12 +121,14 @@ void printToFile(char filename[100], struct Bor bor)
     exit (1);
   }
 
+  //fprintf(outfile, "%u ", SERIAL);
   fprintf(outfile, "%s ", bor.boraszat);
   fprintf(outfile, "%i ", bor.terulet);
   fprintf(outfile, "%s ", bor.tipus);
   fprintf(outfile, "%i ", bor.liter);
   fprintf(outfile, "%i ", bor.cukorfok);
   fprintf(outfile, "\n");
+
   if (fwrite != 0)
   {
     printf ("Succcess!\n");
