@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define STRMAXSIZE 1000
 
@@ -42,7 +43,7 @@ int main(void)
 {
 
   struct Bor temp;
-  char file[8] = "log.txt";
+  char file[12] = "log/log.txt";
   
   // menu
   char choice[STRMAXSIZE];
@@ -54,13 +55,21 @@ int main(void)
       (f) adatok felvetele\n\
       (m) adatok modositasa\n\
       (t) adatok torlese\n\
+      (e) log torlese\n\
       (x) kilepes\n\
       l/f/m/t/x: "); scanf("%s", &choice);
   
     switch (choice[0])
     {
     case 'l':
-      listFile(file);
+      if (access(file, F_OK))
+      {
+        printf("Log file is empty.\n");
+      }
+      else 
+      {
+        listFile(file);
+      }
       break;
       
     case 'f':
@@ -68,6 +77,9 @@ int main(void)
       printToFile(file, temp);
       listFile(file);
       break;
+
+    case 'e':
+      remove(file);
     
 //    case 'm':
 //      break;
