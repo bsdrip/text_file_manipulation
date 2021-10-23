@@ -1,18 +1,22 @@
 //
 // Szerzo: Szabo Balint
 // Feladat: 
-// Itt van az ősz .... itt a szüret ideje is. Az "Oprendszer Hegyvidék" bírója (hegybíró) elrendelte, hogy a 
-// pontosabb nyilvántartás és a nemkívánatos "csinált bor" háttérbe szorítása miatt minden borászat köteles 
-// jelenteni az egyes szüretelt fajták eredményeit. Azaz meg kell adni, hogy melyik borászat, mekkora területről 
-// (négyszögölben), milyen típusú szőlőt szüretelt, amiből hány liter, milyen cukorfokú must készült. Például: 
-// Öt puttony borászat, 1580 négyszögöl, kékfrankos szőlőből, 2960 liter, 21 cukorfokú mustot készített.
+// Itt van az ősz .... itt a szüret ideje is. Az "Oprendszer Hegyvidék" bírója 
+// (hegybíró) elrendelte, hogy a pontosabb nyilvántartás és a nemkívánatos 
+// "csinált bor" háttérbe szorítása miatt minden borászat köteles jelenteni az 
+// egyes szüretelt fajták eredményeit. Azaz meg kell adni, hogy melyik 
+// borászat, mekkora területről (négyszögölben), milyen típusú szőlőt 
+// szüretelt, amiből hány liter, milyen cukorfokú must készült. Például: 
+// Öt puttony borászat, 1580 négyszögöl, kékfrankos szőlőből, 2960 liter, 21 
+// cukorfokú mustot készített.
 //
-// A szüreti eredmény adatokat fájlban tároljuk, az adatfelvételen túl legyen lehetőségünk az adatokon 
-// módosítani, törölni vagy  listát készíteni.
+// A szüreti eredmény adatokat fájlban tároljuk, az adatfelvételen túl legyen 
+// lehetőségünk az adatokon módosítani, törölni vagy  listát készíteni.
 //
-// Készítsen C nyelvű programot ami  segít a hegybírónak, és ezt a feladatot megoldja, a megoldásnak vagy az
-// opsys.inf.elte.hu kiszolgálón, vagy egy hozzá hasonló(linux) rendszeren kell futnia. A megoldást a beadási 
-// határidőt követő héten be kell mutatni a gyakorlatvezetőnek.
+// Készítsen C nyelvű programot ami  segít a hegybírónak, és ezt a feladatot 
+// megoldja, a megoldásnak vagy az opsys.inf.elte.hu kiszolgálón, vagy egy 
+// hozzá hasonló(linux) rendszeren kell futnia. A megoldást a beadási határidőt 
+// követő héten be kell mutatni a gyakorlatvezetőnek.
 //
 
 
@@ -37,39 +41,40 @@ struct Bor
 
 void readStruct(struct Bor*);
 void listStruct(struct Bor*);
-void printToFile(char*, struct Bor);
-void listFile(char*);
+void printToFile(const char*, struct Bor);
+void listFile(const char*);
+void deleteLine(const char*, int);
+void modifyLine(const char*, int, struct Bor);
 
 int main(void)
 {
-
   struct Bor temp;
-  char file[FILEMAXSIZE] = "log/log.txt";
+  const char file[FILEMAXSIZE] = "log/log.txt";
   
-  // menu
   char choice[STRMAXSIZE];
   do 
   {
   printf("\n################################################\
-      \n  Mit szeretnel?\n\
-      (l) lista keszitese\n\
-      (f) adatok felvetele\n\
-      (m) adatok modositasa\n\
-      (t) adatok torlese\n\
-      (e) log torlese\n\
-      (x) kilepes\n\
-      l/f/m/t/x: "); scanf("%s", &choice);
+      \n  Mit szeretnél?\n\
+      (l) lista keszítése\n\
+      (f) adatok felvétele\n\
+      (m) adatok modosítasa\n\
+      (t) adatok törlése\n\
+      (e) log törlése\n\
+      (x) kilépés\n\
+      l/f/m/t/x: "); scanf("%s", choice);
   
+  int n; 
     switch (choice[0])
     {
     case 'l':
       if (access(file, F_OK))
       {
-        printf("\n  Log fajl ures.\n");
+        printf("\n  Log fájl üres.\n");
       }
       else 
       {
-        printf("\n  Log fajl tartalma:\n");
+        printf("\n  Log fájl tartalma:\n");
         listFile(file);
       }
       break;
@@ -80,16 +85,26 @@ int main(void)
       listStruct(&temp);
       break;
 
-    case 'e':
-      printf("\n  Log fajl torolve.\n");
-      remove(file);
+    case 'm':
+      printf("Melyik sort szeretnéd módosítani?\n");
+      scanf("%i", &n);
+      printf("Add meg az új paramétereket a sornak:\n");
+      readStruct(&temp);
+      listStruct(&temp);
+      modifyLine(file, n, temp);
       break;
     
-//    case 'm':
-//      break;
-//    
-//    case 't':
-//      break;
+    case 't':
+      listFile(file);
+      printf("\n  Melyik sort szeretnéd törölni?\n");
+      scanf("%i", &n);
+      deleteLine(file, n);
+      break;
+
+    case 'e':
+      printf("\n  Log fájl törölve.\n");
+      remove(file);
+      break;
     }
   } while (choice[0] != 'x');
 
@@ -99,15 +114,88 @@ int main(void)
 
 
 
-//////////////////////////////////////////// FUNCTIONS ///////////////////////////////////////////
+//////////////////////////////// FUNCTIONS ///////////////////////////////////
 
-void listFile(char filename[FILEMAXSIZE])
+void modifyLine(const char* file, int modl, struct Bor bor)
 {
-  FILE *file;
+  char tmpf[FILEMAXSIZE] = "tmp.txt";
+  FILE *fp1, *fp2;
+  char c;
+  char str[STRMAXSIZE];
+  int counter = 0;
+
+  fp1 = fopen(file, "r");
+  fp2 = fopen(tmpf, "w");
+  
+  while (!feof(fp1))
+  {
+    strcpy(str, "\0");
+    fgets(str, STRMAXSIZE, fp1);
+
+    if (!feof(fp1))
+    {
+      counter++;
+      if (counter != modl)
+      {
+        fprintf(fp2, "%s", str);
+      }
+      else
+      {
+        printToFile(file, bor);
+      }
+    }
+  }
+
+  fclose(fp1);
+  fclose(fp2);
+
+  remove(file);
+  rename(tmpf, file);
+}
+
+
+
+void deleteLine(const char* file, int dell)
+{
+  char tmpf[FILEMAXSIZE] = "tmp.txt";
+  FILE *fp1, *fp2;
+  char c;
+  char str[STRMAXSIZE];
+  int counter = 0;
+
+  fp1 = fopen(file, "r");
+  fp2 = fopen(tmpf, "w"); 
+
+  while (!feof(fp1))
+  {
+    strcpy(str, "\0");
+    fgets(str, STRMAXSIZE, fp1);
+
+    if (!feof(fp1))
+    {
+      counter++;
+      if (counter != dell)
+      {
+        fprintf(fp2, "%s", str);
+      }
+    }
+  }
+
+  fclose(fp1);
+  fclose(fp2);
+
+  remove(file);
+  rename(tmpf, file);
+}
+
+
+void listFile(const char* file)
+{
+  FILE *fp;
 
   char c;
 
-  file = fopen(filename, "r");
+  fp = fopen(file, "r");
 
   if (file == NULL)
   {
@@ -116,34 +204,34 @@ void listFile(char filename[FILEMAXSIZE])
   }
 
   printf("\n");
-  c = fgetc(file);
+  c = fgetc(fp);
   while (c != EOF)
   {
     printf("%c", c);
-    c = fgetc(file);
+    c = fgetc(fp);
   }
 
-  fclose(file);
+  fclose(fp);
 }
 
-void printToFile(char filename[FILEMAXSIZE], struct Bor bor)
+void printToFile(const char* file, struct Bor bor)
 {
-  FILE *outfile;
+  FILE *fp;
 
-  outfile = fopen(filename, "a");
+  fp = fopen(file, "a");
 
-  if (outfile == NULL)
+  if (fp == NULL)
   {
     fprintf(stderr, "\nFile cannot be opened\n");
     exit (1);
   }
 
-  fprintf(outfile, "%s ", bor.boraszat);
-  fprintf(outfile, "%i ", bor.terulet);
-  fprintf(outfile, "%s ", bor.tipus);
-  fprintf(outfile, "%i ", bor.liter);
-  fprintf(outfile, "%i ", bor.cukorfok);
-  fprintf(outfile, "\n");
+  fprintf(fp, "%s ", bor.boraszat);
+  fprintf(fp, "%i ", bor.terulet);
+  fprintf(fp, "%s ", bor.tipus);
+  fprintf(fp, "%i ", bor.liter);
+  fprintf(fp, "%i ", bor.cukorfok);
+  fprintf(fp, "\n");
 /*
   if (fwrite != 0)
   {
@@ -154,15 +242,15 @@ void printToFile(char filename[FILEMAXSIZE], struct Bor bor)
     printf("Error.\n");
   }
 */
-  fclose(outfile);
+  fclose(fp);
 }
 
 
 void readStruct(struct Bor* bor)
 {
-  printf("  Boraszat: "); scanf("%s", bor->boraszat);
-  printf("  Terulet: "); scanf("%i", &bor->terulet);
-  printf("  Tipus: "); scanf("%s", bor->tipus);
+  printf("  Borászat: "); scanf("%s", bor->boraszat);
+  printf("  Terlet: "); scanf("%i", &bor->terulet);
+  printf("  Típus: "); scanf("%s", bor->tipus);
   printf("  Liter: "); scanf("%i", &bor->liter);
   printf("  Cukorfok: "); scanf("%i", &bor->cukorfok);
 }
@@ -171,3 +259,4 @@ void listStruct(struct Bor* bor)
 {
   printf("\n%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, bor->liter, bor->cukorfok);
 }
+
