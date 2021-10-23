@@ -86,9 +86,10 @@ int main(void)
       break;
 
     case 'm':
-      printf("Melyik sort szeretnéd módosítani?\n");
+      listFile(file);
+      printf("\n  Melyik sort szeretnéd módosítani?\n");
       scanf("%i", &n);
-      printf("Add meg az új paramétereket a sornak:\n");
+      printf("\n  Add meg az új paramétereket a sornak:\n");
       readStruct(&temp);
       listStruct(&temp);
       modifyLine(file, n, temp);
@@ -123,7 +124,6 @@ void modifyLine(const char* file, int modl, struct Bor bor)
   char c;
   char str[STRMAXSIZE];
   int counter = 0;
-
   fp1 = fopen(file, "r");
   fp2 = fopen(tmpf, "w");
   
@@ -135,13 +135,18 @@ void modifyLine(const char* file, int modl, struct Bor bor)
     if (!feof(fp1))
     {
       counter++;
-      if (counter != modl)
+      if (counter == modl)
       {
-        fprintf(fp2, "%s", str);
+        fprintf(fp2, "%s ", bor.boraszat);
+        fprintf(fp2, "%i ", bor.terulet);
+        fprintf(fp2, "%s ", bor.tipus);
+        fprintf(fp2, "%i ", bor.liter);
+        fprintf(fp2, "%i ", bor.cukorfok);
+        fprintf(fp2, "\n");
       }
       else
       {
-        printToFile(file, bor);
+        fprintf(fp2, "%s", str);
       }
     }
   }
@@ -152,7 +157,6 @@ void modifyLine(const char* file, int modl, struct Bor bor)
   remove(file);
   rename(tmpf, file);
 }
-
 
 
 void deleteLine(const char* file, int dell)
@@ -232,16 +236,7 @@ void printToFile(const char* file, struct Bor bor)
   fprintf(fp, "%i ", bor.liter);
   fprintf(fp, "%i ", bor.cukorfok);
   fprintf(fp, "\n");
-/*
-  if (fwrite != 0)
-  {
-    printf ("Succcess!\n");
-  }
-  else
-  {
-    printf("Error.\n");
-  }
-*/
+
   fclose(fp);
 }
 
@@ -257,6 +252,7 @@ void readStruct(struct Bor* bor)
 
 void listStruct(struct Bor* bor)
 {
-  printf("\n%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, bor->liter, bor->cukorfok);
+  printf("\n%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus, 
+    bor->liter, bor->cukorfok);
 }
 
