@@ -49,7 +49,7 @@ void modifyLine(const char*, int, struct Bor);
 int main(void)
 {
   struct Bor temp;
-  const char file[FILEMAXSIZE] = "log/log.txt";
+  const char file[FILEMAXSIZE] = "log.txt";
   
   char choice[STRMAXSIZE];
   do 
@@ -80,31 +80,59 @@ int main(void)
       break;
       
     case 'f':
-      readStruct(&temp);
-      printToFile(file, temp);
-      listStruct(&temp);
+      if (access(file, F_OK))
+      {
+        printf("\n  Log fájl üres.\n"); 
+      }
+      else
+      {
+        readStruct(&temp);
+        printToFile(file, temp);
+        listStruct(&temp);
+      }
       break;
 
     case 'm':
-      listFile(file);
-      printf("\n  Melyik sort szeretnéd módosítani?\n");
-      scanf("%i", &n);
-      printf("\n  Add meg az új paramétereket a sornak:\n");
-      readStruct(&temp);
-      listStruct(&temp);
-      modifyLine(file, n, temp);
+      if (access(file, F_OK))
+      {
+        printf("\n  Log fájl üres.\n");
+      }
+      else 
+      {
+        listFile(file);
+        printf("\n  Melyik sort szeretnéd módosítani?\n");
+        scanf("%i", &n);
+        printf("\n  Add meg az új paramétereket a sornak:\n");
+        readStruct(&temp);
+        listStruct(&temp);
+        modifyLine(file, n, temp);
+      }
       break;
     
     case 't':
-      listFile(file);
-      printf("\n  Melyik sort szeretnéd törölni?\n");
-      scanf("%i", &n);
-      deleteLine(file, n);
+      if (access(file, F_OK))
+      {
+        printf("\n  Log fájl üres.\n");
+      }
+      else 
+      {
+        listFile(file);
+        printf("\n  Melyik sort szeretnéd törölni?\n");
+        scanf("%i", &n);
+        deleteLine(file, n);
+      }
       break;
 
     case 'e':
-      printf("\n  Log fájl törölve.\n");
-      remove(file);
+      if (access(file, F_OK))
+      {
+        printf("\n  Log fájl üres.\n");
+      }
+      else 
+      {
+        printf("\n  Log fájl törölve.\n");
+        remove(file);
+      }
       break;
     }
   } while (choice[0] != 'x');
@@ -201,12 +229,6 @@ void listFile(const char* file)
 
   fp = fopen(file, "r");
 
-  if (file == NULL)
-  {
-    printf("\nCannot open file.\n");
-    exit (0);
-  }
-
   printf("\n");
   c = fgetc(fp);
   while (c != EOF)
@@ -223,12 +245,6 @@ void printToFile(const char* file, struct Bor bor)
   FILE *fp;
 
   fp = fopen(file, "a");
-
-  if (fp == NULL)
-  {
-    fprintf(stderr, "\nFile cannot be opened\n");
-    exit (1);
-  }
 
   fprintf(fp, "%s ", bor.boraszat);
   fprintf(fp, "%i ", bor.terulet);
