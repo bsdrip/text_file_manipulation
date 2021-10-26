@@ -70,7 +70,7 @@ int main(void)
     case 'l':
       if (access(file, F_OK))
       {
-        printf("\n  Log fájl üres.\n");
+        printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
       }
       else 
       {
@@ -80,22 +80,15 @@ int main(void)
       break;
       
     case 'f':
-      if (access(file, F_OK))
-      {
-        printf("\n  Log fájl üres.\n"); 
-      }
-      else
-      {
-        readStruct(&temp);
-        printToFile(file, temp);
-        listStruct(&temp);
-      }
+      readStruct(&temp);
+      printToFile(file, temp);
+      listStruct(&temp);
       break;
 
     case 'm':
       if (access(file, F_OK))
       {
-        printf("\n  Log fájl üres.\n");
+        printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
       }
       else 
       {
@@ -112,7 +105,7 @@ int main(void)
     case 't':
       if (access(file, F_OK))
       {
-        printf("\n  Log fájl üres.\n");
+        printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
       }
       else 
       {
@@ -126,7 +119,7 @@ int main(void)
     case 'e':
       if (access(file, F_OK))
       {
-        printf("\n  Log fájl üres.\n");
+        printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
       }
       else 
       {
