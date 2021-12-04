@@ -1,24 +1,7 @@
 //
 // Szerzo: Szabo Balint
-// Feladat: 
-// Itt van az ősz .... itt a szüret ideje is. Az "Oprendszer Hegyvidék" bírója 
-// (hegybíró) elrendelte, hogy a pontosabb nyilvántartás és a nemkívánatos 
-// "csinált bor" háttérbe szorítása miatt minden borászat köteles jelenteni az 
-// egyes szüretelt fajták eredményeit. Azaz meg kell adni, hogy melyik 
-// borászat, mekkora területről (négyszögölben), milyen típusú szőlőt 
-// szüretelt, amiből hány liter, milyen cukorfokú must készült. Például: 
-// Öt puttony borászat, 1580 négyszögöl, kékfrankos szőlőből, 2960 liter, 21 
-// cukorfokú mustot készített.
+// Feladat: lásd: README.md
 //
-// A szüreti eredmény adatokat fájlban tároljuk, az adatfelvételen túl legyen 
-// lehetőségünk az adatokon módosítani, törölni vagy  listát készíteni.
-//
-// Készítsen C nyelvű programot ami  segít a hegybírónak, és ezt a feladatot 
-// megoldja, a megoldásnak vagy az opsys.inf.elte.hu kiszolgálón, vagy egy 
-// hozzá hasonló(linux) rendszeren kell futnia. A megoldást a beadási határidőt 
-// követő héten be kell mutatni a gyakorlatvezetőnek.
-//
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,20 +13,24 @@
 int main(void)
 {
   struct Bor temp;
-  const char file[FILEMAXSIZE] = "log.txt";
-  
+  const char file[FILEMAXSIZE] = "log.txt"; 
   char choice[STRMAXSIZE];
+  size_t line_num;
+
+  line_num = numberOfLines(file);
+
   do 
   {
   printf("\n################################################\
       \n  Mit szeretnél?\n\
       (l) lista keszítése\n\
       (f) adatok felvétele\n\
-      (m) adatok modosítasa\n\
+      (m) adatok módosítasa\n\
       (t) adatok törlése\n\
       (e) log törlése\n\
+      (c) ellenőrzés\n\
       (x) kilépés\n\
-      l/f/m/t/x: "); scanf("%s", choice);
+      l/f/m/t/c/x: "); scanf("%s", choice);
   
   int n; 
     switch (choice[0])
@@ -74,8 +61,12 @@ int main(void)
       else 
       {
         listFile(file);
-        printf("\n  Melyik sort szeretnéd módosítani?\n");
+        printf("\n  Módosítani kívánt sor sorszáma: ");
         scanf("%i", &n);
+        while (n >= line_num || n < 1) {
+          printf("  Csak 0-nál nagyobb, illetve a sorok számánál nem nagyobb számot adhatsz meg: ");
+          scanf("%i", &n);
+        }
         printf("\n  Add meg az új paramétereket a sornak:\n");
         readStruct(&temp);
         listStruct(&temp);
@@ -91,8 +82,12 @@ int main(void)
       else 
       {
         listFile(file);
-        printf("\n  Melyik sort szeretnéd törölni?\n");
+        printf("\n  Törölni kívánt sor sorszáma: ");
         scanf("%i", &n);
+        while (n >= line_num || n < 1) {
+          printf("  Csak 0-nál nagyobb, illetve a sorok számánál nem nagyobb számot adhatsz meg: ");
+          scanf("%i", &n);
+        }
         deleteLine(file, n);
       }
       break;
@@ -108,6 +103,19 @@ int main(void)
         remove(file);
       }
       break;
+    case 'c':
+      if (access(file, F_OK))
+      {
+        printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
+      }
+      else 
+      {
+        listFile(file);
+        printf("\n  A számadó útnak indult.\n");
+        checkLine(file);
+        listFile(file);
+      }
+    break;
     }
   } while (choice[0] != 'x');
 

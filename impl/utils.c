@@ -5,7 +5,12 @@
 
 #include "../headers/utils.h"
 
-void modifyLine(const char* file, int modl, struct Bor bor)
+void checkLine(const char * file)
+{
+  // implement this
+}
+
+void modifyLine(const char * file, int modl, struct Bor bor)
 {
   char tmpf[FILEMAXSIZE] = "tmp.txt";
   FILE *fp1, *fp2;
@@ -30,6 +35,7 @@ void modifyLine(const char* file, int modl, struct Bor bor)
         fprintf(fp2, "%s ", bor.tipus);
         fprintf(fp2, "%i ", bor.liter);
         fprintf(fp2, "%i ", bor.cukorfok);
+        fprintf(fp2, "%s ", bor.megfelelt);
         fprintf(fp2, "\n");
       }
       else
@@ -47,7 +53,7 @@ void modifyLine(const char* file, int modl, struct Bor bor)
 }
 
 
-void deleteLine(const char* file, int dell)
+void deleteLine(const char * file, int dell)
 {
   char tmpf[FILEMAXSIZE] = "tmp.txt";
   FILE *fp1, *fp2;
@@ -81,12 +87,10 @@ void deleteLine(const char* file, int dell)
 }
 
 
-void listFile(const char* file)
+void listFile(const char * file)
 {
   FILE *fp;
-
   char c;
-
   fp = fopen(file, "r");
 
   printf("\n");
@@ -100,10 +104,9 @@ void listFile(const char* file)
   fclose(fp);
 }
 
-void printToFile(const char* file, struct Bor bor)
+void printToFile(const char * file, struct Bor bor)
 {
   FILE *fp;
-
   fp = fopen(file, "a");
 
   fprintf(fp, "%s ", bor.boraszat);
@@ -111,13 +114,14 @@ void printToFile(const char* file, struct Bor bor)
   fprintf(fp, "%s ", bor.tipus);
   fprintf(fp, "%i ", bor.liter);
   fprintf(fp, "%i ", bor.cukorfok);
+  fprintf(fp, "%s ", "Nem ellenorzott");
   fprintf(fp, "\n");
 
   fclose(fp);
 }
 
 
-void readStruct(struct Bor* bor)
+void readStruct(struct Bor * bor)
 {
   printf("  Borászat: "); scanf("%s", bor->boraszat);
   printf("  Terlet: "); scanf("%i", &bor->terulet);
@@ -126,8 +130,37 @@ void readStruct(struct Bor* bor)
   printf("  Cukorfok: "); scanf("%i", &bor->cukorfok);
 }
 
-void listStruct(struct Bor* bor)
+void listStruct(struct Bor * bor)
 {
   printf("\n%s %i %s %i %i\n", bor->boraszat, bor->terulet, bor->tipus,
     bor->liter, bor->cukorfok);
+}
+
+size_t numberOfLines(const char * file)
+{ 
+  FILE *fp;
+  char c;
+  size_t counter = 0;
+  fp = fopen(file, "r");
+  if (fp != NULL) {
+    while ((c = fgetc(fp)) != EOF)
+    {
+      if (c == '\n')
+      {
+        counter++;
+      }
+    }
+  }
+
+  fclose(fp);
+  if (counter == 0)
+  {
+    printf("\n  Log fájl nem létezik. Létrehozható adatfelvétellel (f).\n");
+  }
+  else
+  {
+    printf("\n  Log fájlban lévő sorok száma: %lu\n", counter);
+  }
+
+  return counter;
 }
