@@ -51,6 +51,7 @@ int main(void)
       readStruct(&temp);
       printToFile(file, temp);
       listStruct(&temp);
+      line_num++;
       break;
 
     case 'm':
@@ -90,6 +91,7 @@ int main(void)
         }
         deleteLine(file, n);
       }
+      line_num--;
       break;
 
     case 'e':
@@ -102,6 +104,7 @@ int main(void)
         printf("\n  Log fájl törölve.\n");
         remove(file);
       }
+      line_num = 0;
       break;
     case 'c':
       if (access(file, F_OK))
@@ -112,7 +115,7 @@ int main(void)
       {
         listFile(file);
         printf("\n  A számadó útnak indult.\n");
-        checkLine(file);
+        checkLine(file, line_num);
         listFile(file);
       }
     break;

@@ -20,4 +20,4 @@ void printToFile(const char*, struct Bor);
 void listFile(const char*);
 void deleteLine(const char*, int);
 void modifyLine(const char*, int, struct Bor);
-void checkLine(const char*);
+void checkLine(const char*, int);
