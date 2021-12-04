@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc main.c impl/utils.c -o hegyvidek && ./hegyvidek
+gcc main.c -std=c11 impl/utils.c -o hegyvidek && ./hegyvidek
