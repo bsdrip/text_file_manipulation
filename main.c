@@ -86,7 +86,7 @@ int main(void)
         listFile(file);
         printf("\n  Törölni kívánt sor sorszáma: ");
         scanf("%i", &n);
-        while ((unsigned long)n >= line_num || (unsigned long)n < 1) {
+        while ((unsigned long)n > line_num || (unsigned long)n < 1) {
           printf("  Csak 0-nál nagyobb, illetve a sorok számánál nem nagyobb számot adhatsz meg: ");
           scanf("%i", &n);
         }

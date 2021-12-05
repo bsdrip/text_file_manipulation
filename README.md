@@ -1,7 +1,7 @@
 # text_file_manipulation
 
 ## Running the program
-`run.sh` uses C11 standard. Run `chmod u+x run.sh` to give permission for users
+`run.sh` uses C89 standard. Run `chmod u+x run.sh` to give permission for users
 to execute the bash script.
 
 Run `./run.sh` to compile and run the program.  

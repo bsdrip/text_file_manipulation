@@ -203,7 +203,7 @@ void modifyLine(const char * file, int modl, struct Bor bor)
         fprintf(fp2, "%s ", bor.tipus);
         fprintf(fp2, "%i ", bor.liter);
         fprintf(fp2, "%i ", bor.cukorfok);
-        fprintf(fp2, "%s ", bor.megfelelt);
+        fprintf(fp2, "%s ", "NULL");
         fprintf(fp2, "\n");
       }
       else
