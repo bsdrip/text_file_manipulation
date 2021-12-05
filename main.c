@@ -1,7 +1,8 @@
-//
-// Szerzo: Szabo Balint
-// Feladat: lásd: README.md
-//
+/*
+ * Szerzo: Szabo Balint
+ * Feladat: lásd: README.md
+ */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,7 +65,7 @@ int main(void)
         listFile(file);
         printf("\n  Módosítani kívánt sor sorszáma: ");
         scanf("%i", &n);
-        while (n >= line_num || n < 1) {
+        while ((unsigned long)n >= line_num || (unsigned long)n < 1) {
           printf("  Csak 0-nál nagyobb, illetve a sorok számánál nem nagyobb számot adhatsz meg: ");
           scanf("%i", &n);
         }
@@ -85,7 +86,7 @@ int main(void)
         listFile(file);
         printf("\n  Törölni kívánt sor sorszáma: ");
         scanf("%i", &n);
-        while (n >= line_num || n < 1) {
+        while ((unsigned long)n >= line_num || (unsigned long)n < 1) {
           printf("  Csak 0-nál nagyobb, illetve a sorok számánál nem nagyobb számot adhatsz meg: ");
           scanf("%i", &n);
         }

@@ -38,7 +38,6 @@ void passed(const char * file, int ln, int yn)
 {
   char tmpf[FILEMAXSIZE] = "tmp.txt";
   FILE *fp1, *fp2;
-  char c;
   char str[STRMAXSIZE];
   int counter = 0;
   char* sentence = NULL;
@@ -47,7 +46,7 @@ void passed(const char * file, int ln, int yn)
 
   const char pass[STRMAXSIZE] = "Megfelelt";
   const char fail[STRMAXSIZE] = "Megbukott";
-  const char none[STRMAXSIZE] = "NUL";
+  const char none[STRMAXSIZE] = "NULL";
   while (!feof(fp1))
   {
     strcpy(str, "\0");
@@ -82,16 +81,16 @@ void passed(const char * file, int ln, int yn)
             fprintf(fp2, "%s", str);
           }
         }
-        else if (strstr(str, "NULL"))
+        else if (strstr(str, none))
         {
           if (yn == 1) 
           { 
-            sentence = changeWord(str, "NULL", fail); 
+            sentence = changeWord(str, none, fail); 
             fprintf(fp2, "%s", sentence);
           }
           else if (yn == 0)
           {
-            sentence = changeWord(str, "NULL", pass); 
+            sentence = changeWord(str, none, pass); 
             fprintf(fp2, "%s", sentence);
           }
         }
@@ -184,7 +183,6 @@ void modifyLine(const char * file, int modl, struct Bor bor)
 {
   char tmpf[FILEMAXSIZE] = "tmp.txt";
   FILE *fp1, *fp2;
-  char c;
   char str[STRMAXSIZE];
   int counter = 0;
   fp1 = fopen(file, "r");
@@ -227,7 +225,6 @@ void deleteLine(const char * file, int dell)
 {
   char tmpf[FILEMAXSIZE] = "tmp.txt";
   FILE *fp1, *fp2;
-  char c;
   char str[STRMAXSIZE];
   int counter = 0;
 
